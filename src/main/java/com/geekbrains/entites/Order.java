@@ -1,6 +1,8 @@
 package com.geekbrains.entites;
 
 import com.geekbrains.utils.Cart;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
@@ -8,6 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
+@NoArgsConstructor
+@Data
 @Table(name = "orders")
 public class Order {
     @Id
