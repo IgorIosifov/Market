@@ -41,8 +41,15 @@ public class OrderController {
         User user = userService.findByPhone(principal.getName());
         Order order = new Order(user, cart, address, phone);
         order = orderService.save(order);
-        model.addAttribute("order_id_str", String.format("%05d", order.getId()));
+        model.addAttribute("order_id_str",  order.getId());
         model.addAttribute("user", principal);
         return "order_confirmation";
     }
+
+    @GetMapping("/history")
+    public String showOrdersHistory(Principal principal, Model model) {
+        model.addAttribute("orders_history_list",orderService.findOrdersByPhone(principal.getName()));
+        return "orders_history";
+    }
+
 }
