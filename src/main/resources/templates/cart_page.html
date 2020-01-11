@@ -24,6 +24,7 @@
                 <th>Название товара</th>
                 <th>Количество</th>
                 <th>Цена</th>
+                <th></th>
             </tr>
             </thead>
             <tbody>
@@ -31,12 +32,15 @@
                 <td th:text="${item.product.title}"/>
                 <td th:text="${item.quantity}"/>
                 <td th:text="${item.price}"/>
+                <td>
+                    <a th:href="@{'/cart/remove/'+ ${item.product.id}} " class = "btn btn-danger">Удалить</a>
+                </td>
             </tr>
             </tbody>
         </table>
         <span th:text="'Общая стоимость: ' + ${cart.price}" />
         <br>
-        <a class="btn btn-primary" th:href="@{/orders/create}" >Оформить заказ</a>
+        <a class="btn btn-primary" th:href="@{/orders/info}">Перейти к оформлению заказа</a>
     </div>
     <div th:if="${cart.items.size() == 0}">
         <span text="Ваша корзина пуста" />

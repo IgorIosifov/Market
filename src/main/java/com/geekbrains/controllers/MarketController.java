@@ -33,6 +33,8 @@ public class MarketController {
     private OrderService orderService;
     private Cart cart;
 
+
+
     public MarketController(ProductService productService, CategoryService categoryService, UserService userService, OrderService orderService, Cart cart) {
         this.productService = productService;
         this.categoryService = categoryService;
@@ -85,26 +87,6 @@ public class MarketController {
     @PostMapping("/edit")
     public String saveProduct(@ModelAttribute(name = "product") Product product) {
         productService.save(product);
-        return "redirect:/";
-    }
-
-    @GetMapping("/cart/add/{id}")
-    public void addProductToCart(@PathVariable Long id, HttpServletRequest request, HttpServletResponse response) throws IOException {
-        cart.add(productService.findById(id));
-        response.sendRedirect(request.getHeader("referer"));
-    }
-
-    @GetMapping("/cart")
-    public String showCart(Model model) {
-        model.addAttribute("cart", cart);
-        return "cart_page";
-    }
-
-    @GetMapping("/orders/create")
-    public String createOrder(Principal principal) {
-        User user = userService.findByPhone(principal.getName());
-        Order order = new Order(user, cart);
-        orderService.save(order);
         return "redirect:/";
     }
 }
