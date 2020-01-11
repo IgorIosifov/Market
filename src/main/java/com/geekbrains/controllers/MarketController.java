@@ -89,4 +89,20 @@ public class MarketController {
         productService.save(product);
         return "redirect:/";
     }
+
+
+    @GetMapping("/registration")
+    public String showForm(){
+        return "registration_form";
+    }
+
+    @PostMapping("/registration")
+    public String addNewUser(@ModelAttribute(name = "phone") String phone,
+                             @ModelAttribute(name = "password") String password,
+                             @ModelAttribute(name = "first_name") String first_name,
+                             @ModelAttribute(name = "last_name") String last_name,
+                             @ModelAttribute(name = "email") String email) {
+        userService.addNewUser(phone, password, first_name, last_name, email);
+        return "redirect:/";
+    }
 }

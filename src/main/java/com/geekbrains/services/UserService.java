@@ -1,5 +1,6 @@
 package com.geekbrains.services;
 
+import com.geekbrains.configs.SecurityConfig;
 import com.geekbrains.entites.Role;
 import com.geekbrains.entites.User;
 import com.geekbrains.repositories.RoleRepository;
@@ -10,6 +11,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,6 +22,7 @@ import java.util.stream.Collectors;
 public class UserService implements UserDetailsService {
     private UserRepository userRepository;
     private RoleRepository roleRepository;
+    private SecurityConfig securityConfig;
 
     @Autowired
     public void setUserRepository(UserRepository userRepository) {
@@ -29,6 +32,11 @@ public class UserService implements UserDetailsService {
     @Autowired
     public void setRoleRepository(RoleRepository roleRepository) {
         this.roleRepository = roleRepository;
+    }
+
+    @Autowired
+    public void setSecurityConfig(SecurityConfig securityConfig) {
+        this.securityConfig = securityConfig;
     }
 
     public User findByPhone(String phone) {
@@ -52,5 +60,16 @@ public class UserService implements UserDetailsService {
 
     public boolean isUserExist(String phone) {
         return userRepository.existsByPhone(phone);
+    }
+
+    public void addNewUser (String phone, String password, String first_name, String last_name, String email) {
+        User newUser = new User();
+        newUser.setPhone(phone);
+        String encodePassword = securityConfig.passwordEncoder().encode(password);
+        newUser.setPassword(encodePassword);
+        newUser.setFirstName(first_name);
+        newUser.setLastName(last_name);
+        newUser.setEmail(email);
+        userRepository.save(newUser);
     }
 }
