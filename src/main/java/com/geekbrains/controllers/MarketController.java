@@ -1,5 +1,6 @@
 package com.geekbrains.controllers;
 
+import com.geekbrains.configs.SecurityConfig;
 import com.geekbrains.entites.Category;
 import com.geekbrains.entites.Order;
 import com.geekbrains.entites.Product;
@@ -32,15 +33,17 @@ public class MarketController {
     private UserService userService;
     private OrderService orderService;
     private Cart cart;
+    private SecurityConfig securityConfig;
 
 
 
-    public MarketController(ProductService productService, CategoryService categoryService, UserService userService, OrderService orderService, Cart cart) {
+    public MarketController(ProductService productService, CategoryService categoryService, UserService userService, OrderService orderService, Cart cart, SecurityConfig securityConfig) {
         this.productService = productService;
         this.categoryService = categoryService;
         this.userService = userService;
         this.orderService = orderService;
         this.cart = cart;
+        this.securityConfig = securityConfig;
     }
 
     @GetMapping("/login")
@@ -97,12 +100,17 @@ public class MarketController {
     }
 
     @PostMapping("/registration")
+
     public String addNewUser(@ModelAttribute(name = "phone") String phone,
                              @ModelAttribute(name = "password") String password,
                              @ModelAttribute(name = "first_name") String first_name,
                              @ModelAttribute(name = "last_name") String last_name,
                              @ModelAttribute(name = "email") String email) {
-        userService.addNewUser(phone, password, first_name, last_name, email);
+        if (userService.isUserExist(phone)){
+            userService.registerExistingUser(phone, password, first_name, last_name, email);
+        } else {
+            userService.addNewUser(phone, password, first_name, last_name, email);
+        }
         return "redirect:/";
     }
 }

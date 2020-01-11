@@ -30,26 +30,40 @@ public class OrderController {
 
     @GetMapping("/info")
     public String confirmOrder(Principal principal, Model model) {
-        User user = userService.findByPhone(principal.getName());
+        if (principal != null) {
+            User user = userService.findByPhone(principal.getName());
+            model.addAttribute("def_phone", user.getPhone());
+        } else {
+            model.addAttribute("def_phone", "");
+        }
         model.addAttribute("cart", cart);
-        model.addAttribute("def_phone", user.getPhone());
         return "order_info_before_confirmation";
     }
 
     @PostMapping("/create")
     public String createOrder(Principal principal, Model model, @RequestParam(name = "address") String address, @RequestParam(name = "phone_number") String phone) {
-        User user = userService.findByPhone(principal.getName());
+        User user = new User();
+        if (principal != null) {
+            user = userService.findByPhone(principal.getName());
+        } else {
+            user.setPhone(phone);
+            userService.addNewUser(user);
+        }
         Order order = new Order(user, cart, address, phone);
         order = orderService.save(order);
         model.addAttribute("order_id_str",  order.getId());
-        model.addAttribute("user", principal);
         return "order_confirmation";
     }
 
     @GetMapping("/history")
     public String showOrdersHistory(Principal principal, Model model) {
-        model.addAttribute("orders_history_list",orderService.findOrdersByPhone(principal.getName()));
-        return "orders_history";
+        if (principal!=null) {
+            model.addAttribute("orders_history_list", orderService.findOrdersByPhone(principal.getName()));
+            return "orders_history";
+        }
+        else {
+            return "registration_form";
+        }
     }
 
 }

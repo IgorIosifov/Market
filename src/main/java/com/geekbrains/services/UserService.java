@@ -72,4 +72,18 @@ public class UserService implements UserDetailsService {
         newUser.setEmail(email);
         userRepository.save(newUser);
     }
+
+    public void addNewUser (User user){
+        userRepository.save(user);
+    }
+
+    public void registerExistingUser(String phone, String password, String first_name, String last_name, String email){
+        User existingUser =findByPhone(phone);
+        String encodePassword = securityConfig.passwordEncoder().encode(password);
+        existingUser.setPassword(encodePassword);
+        existingUser.setFirstName(first_name);
+        existingUser.setLastName(last_name);
+        existingUser.setEmail(email);
+        userRepository.save(existingUser);
+    }
 }
