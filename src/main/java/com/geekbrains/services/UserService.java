@@ -15,7 +15,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -70,11 +72,19 @@ public class UserService implements UserDetailsService {
         newUser.setFirstName(first_name);
         newUser.setLastName(last_name);
         newUser.setEmail(email);
+        addDefaultRoleToUser(newUser);
         userRepository.save(newUser);
     }
 
     public void addNewUser (User user){
+        addDefaultRoleToUser(user);
         userRepository.save(user);
+    }
+
+    private void addDefaultRoleToUser(User user) {
+        List<Role> defaultUserRoles = new ArrayList<>();
+        defaultUserRoles.add(roleRepository.findOneByName("ROLE_CUSTOMER"));
+        user.setRoles(defaultUserRoles);
     }
 
     public void registerExistingUser(String phone, String password, String first_name, String last_name, String email){
