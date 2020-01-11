@@ -89,31 +89,4 @@ public class MarketController {
         productService.save(product);
         return "redirect:/";
     }
-
-    @GetMapping("/cart/add/{id}")
-    public void addProductToCart(@PathVariable Long id, HttpServletRequest request, HttpServletResponse response) throws IOException {
-        cart.add(productService.findById(id));
-        response.sendRedirect(request.getHeader("referer"));
-    }
-
-    @GetMapping("/cart")
-    public String showCart(Model model) {
-        model.addAttribute("cart", cart);
-        return "cart_page";
-    }
-
-    @GetMapping("/orders/create")
-    public String createOrder(Principal principal, Model model) {
-        model.addAttribute("cart", cart);
-        model.addAttribute("user", principal);
-        return "confirm";
-    }
-    @GetMapping("/orders/confirm")
-    public String confirmOrder(Principal principal, Model model) {
-        User user = userService.findByPhone(principal.getName());
-        Order order = new Order(user, cart);
-        orderService.save(order);
-        model.addAttribute("order", order);
-        return "confirm_page";
-    }
 }

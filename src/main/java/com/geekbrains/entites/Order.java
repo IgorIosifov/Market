@@ -29,10 +29,19 @@ public class Order {
     @Column(name = "price")
     private BigDecimal price;
 
-    public Order(User user, Cart cart) {
+    @Column(name = "address")
+    private String address;
+
+    @Column(name = "phone_number")
+    private String phone;
+
+
+    public Order(User user, Cart cart, String address, String phone) {
         this.user = user;
         this.price = cart.getPrice();
         this.items = new ArrayList<>();
+        this.address = address;
+        this.phone = phone;
         for (OrderItem i : cart.getItems()) {
             i.setOrder(this);
             this.items.add(i);
