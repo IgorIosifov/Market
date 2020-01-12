@@ -1,6 +1,10 @@
 package com.geekbrains.services;
 
 import com.geekbrains.entites.Order;
+import com.geekbrains.entites.OrderItem;
+import com.geekbrains.entites.Product;
+import com.geekbrains.entites.User;
+import com.geekbrains.repositories.OrderItemRepository;
 import com.geekbrains.repositories.OrderRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,4 +27,9 @@ public class OrderService {
     public List<Order> findOrdersByPhone (String phone){
         return orderRepository.findAllByPhone(phone) ;
     }
+
+    public List<Order> findOrdersByUser(User user) {
+        return orderRepository.findAllByUser(user) ;
+    }
+
 }

@@ -1,7 +1,9 @@
 package com.geekbrains.controllers;
 
 import com.geekbrains.entites.Order;
+import com.geekbrains.entites.OrderItem;
 import com.geekbrains.entites.User;
+import com.geekbrains.repositories.OrderItemRepository;
 import com.geekbrains.services.OrderService;
 import com.geekbrains.services.UserService;
 import com.geekbrains.utils.Cart;
@@ -20,11 +22,13 @@ public class OrderController {
     private Cart cart;
     private UserService userService;
     private OrderService orderService;
+    private OrderItemRepository orderItemRepository;
 
-    public OrderController(Cart cart, UserService userService, OrderService orderService) {
+    public OrderController(Cart cart, UserService userService, OrderService orderService, OrderItemRepository orderItemRepository) {
         this.cart = cart;
         this.userService = userService;
         this.orderService = orderService;
+        this.orderItemRepository = orderItemRepository;
     }
 
 
@@ -51,17 +55,21 @@ public class OrderController {
         }
         Order order = new Order(user, cart, address, phone);
         order = orderService.save(order);
-        model.addAttribute("order_id_str",  order.getId());
+
+        for (OrderItem orderItem : order.getItems()) {
+            orderItemRepository.save(orderItem);
+        }
+
+        model.addAttribute("order_id_str", order.getId());
         return "order_confirmation";
     }
 
     @GetMapping("/history")
     public String showOrdersHistory(Principal principal, Model model) {
-        if (principal!=null) {
+        if (principal != null) {
             model.addAttribute("orders_history_list", orderService.findOrdersByPhone(principal.getName()));
             return "orders_history";
-        }
-        else {
+        } else {
             return "registration_form";
         }
     }

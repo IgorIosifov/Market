@@ -41,13 +41,26 @@ CREATE TABLE users_roles (
   REFERENCES roles (id)
 );
 
+drop table if exists feedbacks cascade;
+create table feedbacks (
+    id bigserial primary key ,
+    product_id bigint,
+    user_id bigint,
+    text varchar(500),
+    rating int,
+    foreign key (product_id) references products (id),
+    foreign key (user_id) references users (id));
+
+
+
 INSERT INTO roles (name)
 VALUES
 ('ROLE_CUSTOMER'), ('ROLE_MANAGER'), ('ROLE_ADMIN');
 
 INSERT INTO users (phone, password, first_name, last_name, email)
 VALUES
-('11111111','$2a$04$Fx/SX9.BAvtPlMyIIqqFx.hLY2Xp8nnhpzvEEVINvVpwIPbA3v/.i','Admin','Admin','admin@gmail.com');
+('11111111','$2a$04$Fx/SX9.BAvtPlMyIIqqFx.hLY2Xp8nnhpzvEEVINvVpwIPbA3v/.i','Admin','Admin','admin@gmail.com'),
+('2222222','$2y$12$KIO.IcWQQ0FsUpd2DRfJd.2TARMh4ZftOpy6oneH9cGyKB739OITm','Ad','Ad','ad@gm.com');
 
 INSERT INTO users_roles (user_id, role_id)
 VALUES
@@ -60,3 +73,6 @@ create table orders (id bigserial, user_id bigint, price numeric(8, 2) not null 
 
 drop table if exists orders_items cascade;
 create table orders_items (id bigserial, order_id bigint, product_id bigint, quantity int, price numeric(8, 2), primary key(id), constraint fk_prod_id foreign key (product_id) references products (id), constraint fk_order_id foreign key (order_id) references orders (id));
+
+insert into feedbacks (product_id,user_id,text,rating) values
+(1,1,'Really nice bread!',5), (1,2,'not so nice bread',3);

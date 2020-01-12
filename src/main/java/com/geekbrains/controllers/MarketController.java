@@ -2,7 +2,6 @@ package com.geekbrains.controllers;
 
 import com.geekbrains.configs.SecurityConfig;
 import com.geekbrains.entites.Category;
-import com.geekbrains.entites.Order;
 import com.geekbrains.entites.Product;
 import com.geekbrains.entites.User;
 import com.geekbrains.services.CategoryService;
@@ -18,10 +17,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import java.io.IOException;
 import java.security.Principal;
 import java.util.List;
 import java.util.Map;
@@ -93,14 +88,16 @@ public class MarketController {
         return "redirect:/";
     }
 
-
     @GetMapping("/registration")
-    public String showForm(){
-        return "registration_form";
+    public String showForm(Principal principal){
+        if (principal==null){
+            return "registration_form";
+        }
+        return "already_registered";
+
     }
 
     @PostMapping("/registration")
-
     public String addNewUser(@ModelAttribute(name = "phone") String phone,
                              @ModelAttribute(name = "password") String password,
                              @ModelAttribute(name = "first_name") String first_name,
