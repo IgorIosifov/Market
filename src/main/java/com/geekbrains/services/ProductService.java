@@ -1,6 +1,7 @@
 package com.geekbrains.services;
 
-import com.geekbrains.entites.Product;
+import com.geekbrains.entites.*;
+import com.geekbrains.repositories.FeedbackRepository;
 import com.geekbrains.repositories.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -8,15 +9,33 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import java.security.Principal;
 import java.util.List;
 
 @Service
 public class ProductService {
     private ProductRepository productRepository;
+    private FeedbackRepository feedbackRepository;
+    private UserService userService;
+    private OrderService orderService;
 
     @Autowired
     public void setProductRepository(ProductRepository productRepository) {
         this.productRepository = productRepository;
+    }
+    @Autowired
+    public void setUserService(UserService userService) {
+        this.userService = userService;
+    }
+    @Autowired
+    public void setOrderService(OrderService orderService) {
+        this.orderService = orderService;
+    }
+
+    @Autowired
+    public void setFeedbackRepository(FeedbackRepository feedbackRepository) {
+        this.feedbackRepository = feedbackRepository;
     }
 
     public Page<Product> findAll(Specification<Product> spec, Pageable pageable) {
@@ -34,5 +53,47 @@ public class ProductService {
 
     public Product save(Product Product) {
         return productRepository.save(Product);
+    }
+
+    public Double averageRating(Long id) {
+        double avgRating;
+        if (findById(id) != null) {
+            Product product = findById(id);
+            List<Feedback> feedbacks = product.getFeedbacks();
+            double sum = 0.0;
+            for (Feedback feedback : feedbacks) {
+                sum += feedback.getRating();
+            }
+            avgRating = sum / feedbacks.size();
+        } else {
+            avgRating = 0.0;
+        }
+        return avgRating;
+    }
+
+    public void addNewFeedback(Feedback feedback) {
+        feedbackRepository.save(feedback);
+        Product product = findById(feedback.getProduct().getId());
+        List<Feedback> feedbacks = product.getFeedbacks();
+        feedbacks.add(feedback);
+        product.setFeedbacks(feedbacks);
+    }
+
+    public boolean isUserBuyProduct(Principal principal, Product product) {
+        if (principal!= null) {
+            User user = userService.findByPhone(principal.getName());
+            List<Order> orders = orderService.findOrdersByUser(user);
+            if (orders.size() != 0) {
+                for (Order order : orders) {
+                    List<OrderItem> orderItems = order.getItems();
+                    for (OrderItem orderItem : orderItems) {
+                        if (orderItem.getProduct()==product){
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
     }
 }

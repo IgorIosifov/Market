@@ -1,6 +1,8 @@
 package com.geekbrains.entites;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
 import java.util.List;
@@ -19,7 +21,7 @@ public class Category {
     private String title;
 
     @OneToMany(mappedBy = "category")
-    @JsonBackReference
+
     private List<Product> products;
 
     public Long getId() {

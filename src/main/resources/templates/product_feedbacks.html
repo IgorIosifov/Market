@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="utf-8"/>
+
+    <title>Отзывы о товаре</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <header class="card-header">
+                    <h4 class="card-title mt-2"><span>Отзывы</span></h4>
+                </header>
+                <table class="table table-hover">
+                    <thead class="thead-dark">
+                    <tr>
+                        <th>Пользователь</th>
+                        <th>Отзыв</th>
+                        <th>Оценка</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="feedback : ${feedbacks}">
+                        <td th:text="${feedback.user.firstName}+' '+${feedback.user.lastName}"/>
+                        <td th:text="${feedback.text}"/>
+                        <td th:text="${feedback.rating}"/>
+                    </tr>
+                    </tbody>
+                </table>
+                <a th:href="@{'/feedbacks/write/' + ${product.id}}" class="btn btn-warning">Написать отзыв</a>
+                <span th:text="'Средняя оценка: '+ ${avgRating}"></span>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

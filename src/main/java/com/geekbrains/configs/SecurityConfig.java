@@ -27,7 +27,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .antMatchers("/edit/**").hasAnyRole("ADMIN")
                 .antMatchers("/profile/**").authenticated()
-                .antMatchers("/orders/**").authenticated()
+                .antMatchers("/feedbacks").authenticated()
                 .anyRequest().permitAll()
                 .and()
                 .formLogin()
@@ -44,6 +44,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
 
     @Bean
     public DaoAuthenticationProvider authenticationProvider() {
