@@ -23,12 +23,14 @@ public class OrderController {
     private UserService userService;
     private OrderService orderService;
     private OrderItemRepository orderItemRepository;
+    private RabbitController rabbitController;
 
-    public OrderController(Cart cart, UserService userService, OrderService orderService, OrderItemRepository orderItemRepository) {
+    public OrderController(Cart cart, UserService userService, OrderService orderService, OrderItemRepository orderItemRepository, RabbitController rabbitController) {
         this.cart = cart;
         this.userService = userService;
         this.orderService = orderService;
         this.orderItemRepository = orderItemRepository;
+        this.rabbitController = rabbitController;
     }
 
 
@@ -61,6 +63,7 @@ public class OrderController {
         }
 
         model.addAttribute("order_id_str", order.getId());
+        rabbitController.sendMessage("Confirm."+ order.getId());
         return "order_confirmation";
     }
 
